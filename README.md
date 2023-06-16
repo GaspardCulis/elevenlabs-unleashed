@@ -28,7 +28,7 @@ def speak(self, message: str):
             voice="Josh", # I like this one
             model="eleven_multilingual_v1"
         )
-    except elevenlabs.api.error.APIError as e:
+    except elevenlabs.api.error.RateLimitError as e:
         print("[ElevenLabs] Maximum number of requests reached. Getting a new API key...")
         eluac.next() # Uses next API key in queue, should be instant as nb_accounts > 1, and will generate a new key in a background thread.
         speak(message)
