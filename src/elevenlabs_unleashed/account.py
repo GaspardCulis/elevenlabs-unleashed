@@ -12,20 +12,32 @@ BASE_URL = "https://beta.elevenlabs.io"
 SIGNUP_URL = "https://beta.elevenlabs.io/sign-up"
 MAIL_DOMAIN = "icznn.com"
 
-def generate_email():
+def _generate_email():
+    """
+    Generate a random email address using names library
+    """
     first_name = names.get_first_name()
     last_name = names.get_last_name()
     if  randint(0, 1) == 0:
         return f'{first_name}.{last_name}{randint(0, 99)}@{MAIL_DOMAIN}'.lower()
     return f'{first_name}{randint(0, 99)}@{MAIL_DOMAIN}'.lower()
 
-def generate_password():
+def _generate_password():
+    """
+    Generate a random password
+    """
     password = ""
     for i in range(0, 12):
         password += chr(randint(97, 122))
     return password
 
-def get_confirmation_link(mail: str):
+def _get_confirmation_link(mail: str):
+    """
+    Use 1secmail API to get the 11labs confirmation link from the email
+    @FIX : if the email has already been used, previous random emails could be used.
+    """
+
+    # Get the latest email id
     mail_user = mail.split('@')[0]
     http_get_url = "https://www.1secmail.com/api/v1/?action=getMessages&login=" + \
         mail_user+"&domain="+MAIL_DOMAIN
@@ -41,10 +53,12 @@ def get_confirmation_link(mail: str):
             if monotonic() - t0 > 60:
                 raise Exception("Email not received in time")
 
+    # Get the email content
     http_get_url_single = "https://www.1secmail.com/api/v1/?action=readMessage&login=" + \
         mail_user+"&domain="+MAIL_DOMAIN+"&id="+str(latest_mail_id)
     mail_content = requests.get(http_get_url_single).json()['textBody']
     
+    # Parse the email content to get the confirmation link
     for line in mail_content.split('\n'):
         if line.startswith("https://"):
             return line
@@ -52,6 +66,9 @@ def get_confirmation_link(mail: str):
     raise Exception("Confirmation link not found")
 
 def create_account():
+    """
+    Create an account on Elevenlabs and return the email, password and api key
+    """
     options = Options()
     options.headless = True
     options.add_argument("--disable-logging")
@@ -61,8 +78,8 @@ def create_account():
 
     driver.get(SIGNUP_URL)
 
-    email = generate_email()
-    password = generate_password()
+    email = _generate_email()
+    password = _generate_password()
 
     cookie_button = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.ID, "CybotCookiebotDialogBodyButtonAccept"))
     cookie_button.click()
@@ -80,7 +97,7 @@ def create_account():
     submit_button =  driver.find_element(By.XPATH, "//button[@type='submit']")
     submit_button.click()
 
-    link = get_confirmation_link(email)
+    link = _get_confirmation_link(email)
 
     driver.get(link)
     sleep(2)
@@ -107,11 +124,12 @@ def create_account():
     profile_button.click()
     
     api_key_input = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.XPATH, "//input[@type='password']"))
-    sleep(0.5)
-    api_key = api_key_input.get_attribute("value")
+    
+    api_key = ''
+    while api_key == '':
+        api_key = api_key_input.get_attribute("value")
+        sleep(0.1)
 
     driver.quit()
 
     return email, password, api_key
-
-print(create_account())
