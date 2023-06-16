@@ -81,8 +81,8 @@ def create_account():
     email = _generate_email()
     password = _generate_password()
 
-    cookie_button = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.ID, "CybotCookiebotDialogBodyButtonAccept"))
-    cookie_button.click()
+    # cookie_button = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.ID, "CybotCookiebotDialogBodyButtonAccept"))
+    # cookie_button.click()
 
     email_input = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.NAME, "email"))
     email_input.send_keys(email)
