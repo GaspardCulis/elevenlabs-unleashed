@@ -44,19 +44,15 @@ def speak(self, message: str):
 
 The `ELUAccountManager` stores an array of API keys populated in a FIFO queue manner. When calling *next()*, it returns the last API key in the queue (making sure it is not empty), and refills the queue, making the API key renewal instant after the first *next()* call as long as nb_accounts is greater than 1 (defaults to 2, more would be overkill).
 
-## Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-You also need the [chromedriver](https://chromedriver.chromium.org/downloads) in your PATH.
-
 ## Installation
 
 ```bash
-pip install .
+pip install elevenlabs-unleashed
 ```
+
+## Dependencies
+
+You need the [chromedriver](https://chromedriver.chromium.org/downloads) in your PATH.
 
 ## TODO
 
