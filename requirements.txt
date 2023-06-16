@@ -1,0 +1,4 @@
+elevenlabs>=0.2.18
+selenium>=4.10.0
+names>=0.3.0
+requests>=2.31.0
