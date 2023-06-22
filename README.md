@@ -66,6 +66,8 @@ This library is very unstable and I guess won't work for long. It only relies on
 
 If you find issues don't hesitate to submit a PR if you find a fix.
 
+USING THIS CODE MIGHT BAN YOUR IP FROM USING ELEVENLABS API, refer to [this](https://help.elevenlabs.io/hc/en-us/articles/14129701265681-Why-am-I-receiving-information-about-unusual-activity-)
+
 ## Credits
 
 Thanks to the ElevenLabs team for making the best multi-lingual TTS models in the world. But because the API pricing is such expensive, this library had to be done.
