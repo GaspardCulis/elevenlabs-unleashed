@@ -7,6 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.wait import WebDriverWait
 from random import randint
 import requests
+import re
 
 BASE_URL = "https://beta.elevenlabs.io"
 SIGNUP_URL = "https://beta.elevenlabs.io/sign-up"
@@ -18,7 +19,7 @@ def _generate_email():
     """
     first_name = names.get_first_name()
     last_name = names.get_last_name()
-    if  randint(0, 1) == 0:
+    if randint(0, 1) == 0:
         return f'{first_name}.{last_name}{randint(0, 99)}@{MAIL_DOMAIN}'.lower()
     return f'{first_name}{randint(0, 99)}@{MAIL_DOMAIN}'.lower()
 
@@ -59,9 +60,12 @@ def _get_confirmation_link(mail: str):
     mail_content = requests.get(http_get_url_single).json()['textBody']
     
     # Parse the email content to get the confirmation link
-    for line in mail_content.split('\n'):
-        if line.startswith("https://"):
-            return line
+    url_extract_pattern = "https?:\\/\\/beta[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
+    urls = re.findall(url_extract_pattern, mail_content)
+    if len(urls) > 1:
+        raise Exception("Multiple confirmation links found")
+    elif len(urls) == 1:
+        return urls[0]
         
     raise Exception("Confirmation link not found")
 
@@ -70,7 +74,7 @@ def create_account():
     Create an account on Elevenlabs and return the email, password and api key
     """
     options = Options()
-    options.headless = True
+    options.headless = False
     options.add_argument("--disable-logging")
     options.add_argument("--log-level=3")
     options.add_argument("--window-size=1440,1280")
@@ -90,22 +94,19 @@ def create_account():
     password_input = driver.find_element(By.NAME, "password")
     password_input.send_keys(password)
 
-    tos_checkbox =  driver.find_element(By.NAME, "terms")
-    tos_checkbox.click()
+    # tos_checkbox =  driver.find_element(By.NAME, "terms")
+    # tos_checkbox.click()
 
     sleep(0.5)
     submit_button =  driver.find_element(By.XPATH, "//button[@type='submit']")
     submit_button.click()
 
     link = _get_confirmation_link(email)
-
-    driver.get(link)
-    sleep(2)
     
-    driver.get(BASE_URL)
-
-    sign_in_form_button = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.XPATH, "//a[@data-testid='sign-in-button']"))
-    sign_in_form_button.click()
+    driver.get(link)
+    
+    close_button = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.XPATH, "//button[text()='Close']"))
+    close_button.click()
 
     email_input = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.XPATH, "//input[@type='email']"))
     email_input.send_keys(email)

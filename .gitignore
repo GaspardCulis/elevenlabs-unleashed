@@ -2,5 +2,10 @@
 *.egg-info
 dist
 build
+bin
+lib
+share
+.env
+pyvenv.cfg
 */**/__pycache__
 */**/*.pyc
