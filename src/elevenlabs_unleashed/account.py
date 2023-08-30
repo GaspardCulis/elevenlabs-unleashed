@@ -8,6 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from random import randint
 import requests
 import re
+import os
 
 BASE_URL = "https://beta.elevenlabs.io"
 SIGNUP_URL = "https://beta.elevenlabs.io/sign-up"
@@ -74,7 +75,7 @@ def create_account():
     Create an account on Elevenlabs and return the email, password and api key
     """
     options = Options()
-    options.headless = False
+    options.headless = os.environ.get("DEBUG", "0") == "0"
     options.add_argument("--disable-logging")
     options.add_argument("--log-level=3")
     options.add_argument("--window-size=1440,1280")

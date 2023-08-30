@@ -38,11 +38,26 @@ def speak(self, message: str):
     play(audio)
 ```
 
+Full-on unlimited 11Labs API wrapper
+    
+```py
+from elevenlabs_unleashed.tts import UnleashedTTS
+
+tts = UnleashedTTS(nb_accounts=2, create_accounts_threads=2)
+"""
+Will automatically generate 2 accounts in 2 threads. Takes a few seconds.
+"""
+
+tts.speak("Hello world!", voice="Josh", model="eleven_multilingual_v1")
+```
+
 ## How it works
 
 11Labs Unleashed is basically just a web scraper (selenium) that creates unlimited 11Labs accounts programatically.
 
 The `ELUAccountManager` stores an array of API keys populated in a FIFO queue manner. When calling *next()*, it returns the last API key in the queue (making sure it is not empty), and refills the queue, making the API key renewal instant after the first *next()* call as long as nb_accounts is greater than 1 (defaults to 2, more would be overkill).
+
+The `UnleashedTTS` class is a wrapper around the ElevenLabs API, it automatically creates a given amount of 11Labs accounts and saves them in a userdata json file at initialisation. When calling *speak()* it will take the account with the higher API usage while still having enough characters left (11Labs bans your IP temporarly if you use too many accounts in a short period of time). At initialisation and after each *speak()* call, it will update each account's API usage (not saving it to the userdata json file).
 
 ## Installation
 
@@ -66,7 +81,7 @@ This library is very unstable and I guess won't work for long. It only relies on
 
 If you find issues don't hesitate to submit a PR if you find a fix.
 
-USING THIS CODE MIGHT BAN YOUR IP FROM USING ELEVENLABS API, refer to [this](https://help.elevenlabs.io/hc/en-us/articles/14129701265681-Why-am-I-receiving-information-about-unusual-activity-)
+Usinf this code might temporarly ban your IP from using 11Labs API, refer to [this](https://help.elevenlabs.io/hc/en-us/articles/14129701265681-Why-am-I-receiving-information-about-unusual-activity-)
 
 ## Credits
 
