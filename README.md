@@ -47,7 +47,7 @@ The `ELUAccountManager` stores an array of API keys populated in a FIFO queue ma
 ## Installation
 
 ```bash
-pip install elevenlabs-unleashed
+pip install git+https://github.com/GaspardCulis/elevenlabs-unleashed.git
 ```
 
 ## Dependencies
