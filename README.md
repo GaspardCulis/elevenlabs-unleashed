@@ -86,7 +86,7 @@ This library is very unstable and I guess won't work for long. It only relies on
 
 If you find issues don't hesitate to submit a PR if you find a fix.
 
-Usinf this code might temporarly ban your IP from using 11Labs API, refer to [this](https://help.elevenlabs.io/hc/en-us/articles/14129701265681-Why-am-I-receiving-information-about-unusual-activity-)
+Using this code might temporarly ban your IP from using 11Labs API, refer to [this](https://help.elevenlabs.io/hc/en-us/articles/14129701265681-Why-am-I-receiving-information-about-unusual-activity-)
 
 ## Credits
 
