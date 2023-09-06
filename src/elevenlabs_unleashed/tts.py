@@ -43,6 +43,7 @@ class UnleashedTTS():
     def __init__(self, accounts_save_path: str = DATADIR / "elevenlabs_accounts.json", nb_accounts: int = 4, create_accounts_threads: int = 2):
         self.accounts_save_path = accounts_save_path
         self.nb_accounts = nb_accounts
+        self.create_account_errors = 0
         self.__check_accounts_file()
         self.__populate_accounts(create_accounts_threads)
 
@@ -129,13 +130,23 @@ class UnleashedTTS():
                 threads.append(thread)
             for thread in threads:
                 thread.join()
+            # Save accounts
+            with open(self.accounts_save_path, "w") as f:
+                json.dump(self.accounts, f)
 
         print("\r[ElevenLabs] Accounts created.                           ")
         with open(self.accounts_save_path, "w") as f:
             json.dump(self.accounts, f)
 
     def __create_account(self):
-        email, password, api_key = create_account()
+        try:
+            email, password, api_key = create_account()
+        except Exception as e:
+            print("[ElevenLabs] Exception while creating account: ", e)
+            self.create_account_errors += 1
+            if self.create_account_errors > 5:
+                raise Exception("Too many errors while creating accounts. Aborting...")
+            return
         self.accounts.append({
             "username": email,
             "password": password,
