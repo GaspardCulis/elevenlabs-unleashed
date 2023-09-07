@@ -7,6 +7,12 @@ This project is getting a bit too popular, be reasonable when creating fake acco
 
 This flaw in the 11Labs project services will in any case be corrected one day, but let's try together to make sure that happens as late as possible.
 
+## Installation
+
+```bash
+pip install git+https://github.com/GaspardCulis/elevenlabs-unleashed.git
+```
+
 ## Usage
 
 Create an account
@@ -63,12 +69,6 @@ tts.speak("Hello world!", voice="Josh", model="eleven_multilingual_v1")
 The `ELUAccountManager` stores an array of API keys populated in a FIFO queue manner. When calling *next()*, it returns the last API key in the queue (making sure it is not empty), and refills the queue, making the API key renewal instant after the first *next()* call as long as nb_accounts is greater than 1 (defaults to 2, more would be overkill).
 
 The `UnleashedTTS` class is a wrapper around the ElevenLabs API, it automatically creates a given amount of 11Labs accounts and saves them in a userdata json file at initialisation. When calling *speak()* it will take the account with the higher API usage while still having enough characters left (11Labs bans your IP temporarly if you use too many accounts in a short period of time). At initialisation and after each *speak()* call, it will update each account's API usage (not saving it to the userdata json file).
-
-## Installation
-
-```bash
-pip install git+https://github.com/GaspardCulis/elevenlabs-unleashed.git
-```
 
 ## Dependencies
 
