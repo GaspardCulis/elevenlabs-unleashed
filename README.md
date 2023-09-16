@@ -2,10 +2,22 @@
 
 Provides unlimited ElevenLabs API calls.
 
-# Disclaimer!
+## Disclaimer!
 This project is getting a bit too popular, be reasonable when creating fake accounts, if too many fake accounts are created, the 11Labs team will start investigating these fake accounts, and patch accounts account with captcha or even remove free access to its services.
 
 This flaw in the 11Labs project services will in any case be corrected one day, but let's try together to make sure that happens as late as possible.
+
+## Installation
+
+### Dependencies
+
+You need the [chromedriver](https://chromedriver.chromium.org/downloads) in your PATH.
+
+### Pip installation
+
+```bash
+pip install git+https://github.com/GaspardCulis/elevenlabs-unleashed.git
+```
 
 ## Usage
 
@@ -64,16 +76,6 @@ The `ELUAccountManager` stores an array of API keys populated in a FIFO queue ma
 
 The `UnleashedTTS` class is a wrapper around the ElevenLabs API, it automatically creates a given amount of 11Labs accounts and saves them in a userdata json file at initialisation. When calling *speak()* it will take the account with the higher API usage while still having enough characters left (11Labs bans your IP temporarly if you use too many accounts in a short period of time). At initialisation and after each *speak()* call, it will update each account's API usage (not saving it to the userdata json file).
 
-## Installation
-
-```bash
-pip install git+https://github.com/GaspardCulis/elevenlabs-unleashed.git
-```
-
-## Dependencies
-
-You need the [chromedriver](https://chromedriver.chromium.org/downloads) in your PATH.
-
 ## TODO
 
 - Automatic account deletion when max API usage reached
@@ -86,7 +88,7 @@ This library is very unstable and I guess won't work for long. It only relies on
 
 If you find issues don't hesitate to submit a PR if you find a fix.
 
-Usinf this code might temporarly ban your IP from using 11Labs API, refer to [this](https://help.elevenlabs.io/hc/en-us/articles/14129701265681-Why-am-I-receiving-information-about-unusual-activity-)
+Using this code might temporarly ban your IP from using 11Labs API, refer to [this](https://help.elevenlabs.io/hc/en-us/articles/14129701265681-Why-am-I-receiving-information-about-unusual-activity-)
 
 ## Credits
 
