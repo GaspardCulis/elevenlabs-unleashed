@@ -76,6 +76,8 @@ The `ELUAccountManager` stores an array of API keys populated in a FIFO queue ma
 
 The `UnleashedTTS` class is a wrapper around the ElevenLabs API, it automatically creates a given amount of 11Labs accounts and saves them in a userdata json file at initialisation. When calling *speak()* it will take the account with the higher API usage while still having enough characters left (11Labs bans your IP temporarly if you use too many accounts in a short period of time). At initialisation and after each *speak()* call, it will update each account's API usage (not saving it to the userdata json file).
 
+You can run the account creation procedure with the browser visible by executing the python process with `DEBUG=1` environment variable.
+
 ## TODO
 
 - Automatic account deletion when max API usage reached
