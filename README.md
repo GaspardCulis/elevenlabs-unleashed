@@ -2,7 +2,11 @@
 
 Provides unlimited ElevenLabs API calls.
 
-## Disclaimer!
+## Annoucement
+
+As of 24th september of 2023, elevenlabs added a captcha to their account creation process, which makes this project much harder to get working. I'm no longer maintaining this repo, and if someone feels capable of bypassing the Captcha, feel free to fork my garbage code.
+
+## Disclaimer! (outdated)
 This project is getting a bit too popular, be reasonable when creating fake accounts, if too many fake accounts are created, the 11Labs team will start investigating these fake accounts, and patch accounts account with captcha or even remove free access to its services.
 
 This flaw in the 11Labs project services will in any case be corrected one day, but let's try together to make sure that happens as late as possible.
