@@ -93,3 +93,5 @@ Using this code might temporarly ban your IP from using 11Labs API, refer to [th
 ## Credits
 
 Thanks to the ElevenLabs team for making the best multi-lingual TTS models in the world. But because the API pricing is such expensive, this library had to be done.
+
+And so thanks to [Wikidepia](https://github.com/Wikidepia) for creating the [hektCaptcha-extension](https://github.com/Wikidepia/hektCaptcha-extension) allowing me to bypass the 11Labs captcha lol.
