@@ -3,7 +3,7 @@
 Provides unlimited ElevenLabs API calls.
 
 ## Disclaimer!
-This project is getting a bit too popular, be reasonable when creating fake accounts, if too many fake accounts are created, the 11Labs team will start investigating these fake accounts, and patch automated account creation with captcha (they did it but #6 showed me how to bypass it) or even remove free access to its services.
+This project is getting a bit too popular, be reasonable when creating fake accounts, if too many fake accounts are created, the 11Labs team will start investigating these fake accounts, and patch automated account creation with captcha (they did it but [#6](https://github.com/GaspardCulis/elevenlabs-unleashed/issues/6) showed me how to bypass it) or even remove free access to its services.
 
 ## Installation
 
