@@ -6,7 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import tempfile
 from selenium.webdriver.support.wait import WebDriverWait
-from random import randint
+from random import randint, sample, shuffle
+import string
 import requests
 import re
 import os
@@ -33,10 +34,19 @@ def _generate_password():
     """
     Generate a random password
     """
-    password = ""
-    for i in range(0, 12):
-        password += chr(randint(97, 122))
-    return password
+    lower = string.ascii_lowercase
+    upper = string.ascii_uppercase
+    num = string.digits
+    symbols = string.punctuation
+
+    temp = sample(upper, randint(1, 2))
+    temp += sample(lower, randint(8, 10))
+    temp += sample(num, randint(1, 3))
+    temp += sample(symbols, 1)
+
+    shuffle(temp)
+
+    return "".join(temp)
 
 
 def _get_confirmation_link(mail: str):
