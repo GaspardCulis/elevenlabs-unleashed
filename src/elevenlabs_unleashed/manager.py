@@ -2,11 +2,15 @@ import threading
 from elevenlabs_unleashed.account import create_account
 from typing import Callable, Tuple
 
-class ELUAccountManager():
+
+class ELUAccountManager:
     """
     Kinda Deprecated, use UnleashedTTS instead
     """
-    def __init__(self, set_api_key_callback: Callable[[str], None], nb_accounts: int = 2):
+
+    def __init__(
+        self, set_api_key_callback: Callable[[str], None], nb_accounts: int = 2
+    ):
         self.__api_key_callback = set_api_key_callback
         self.__nb_accounts = nb_accounts
         self.accounts = []

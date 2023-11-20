@@ -17,6 +17,7 @@ MAIL_DOMAIN = "txcct.com"
 
 HEKT_EXT_PATH = os.path.join(tempfile.gettempdir(), "hektCaptcha-extension.crx")
 
+
 def _generate_email():
     """
     Generate a random email address using names library
@@ -24,8 +25,9 @@ def _generate_email():
     first_name = names.get_first_name()
     last_name = names.get_last_name()
     if randint(0, 1) == 0:
-        return f'{first_name}.{last_name}{randint(0, 99)}@{MAIL_DOMAIN}'.lower()
-    return f'{first_name}{randint(0, 99)}@{MAIL_DOMAIN}'.lower()
+        return f"{first_name}.{last_name}{randint(0, 99)}@{MAIL_DOMAIN}".lower()
+    return f"{first_name}{randint(0, 99)}@{MAIL_DOMAIN}".lower()
+
 
 def _generate_password():
     """
@@ -36,6 +38,7 @@ def _generate_password():
         password += chr(randint(97, 122))
     return password
 
+
 def _get_confirmation_link(mail: str):
     """
     Use 1secmail API to get the 11labs confirmation link from the email
@@ -43,10 +46,14 @@ def _get_confirmation_link(mail: str):
     """
 
     # Get the latest email id
-    mail_user = mail.split('@')[0]
-    http_get_url = "https://www.1secmail.com/api/v1/?action=getMessages&login=" + \
-        mail_user+"&domain="+MAIL_DOMAIN
-    
+    mail_user = mail.split("@")[0]
+    http_get_url = (
+        "https://www.1secmail.com/api/v1/?action=getMessages&login="
+        + mail_user
+        + "&domain="
+        + MAIL_DOMAIN
+    )
+
     latest_mail_id = None
     t0 = monotonic()
     while not latest_mail_id:
@@ -59,10 +66,16 @@ def _get_confirmation_link(mail: str):
                 raise Exception("Email not received in time")
 
     # Get the email content
-    http_get_url_single = "https://www.1secmail.com/api/v1/?action=readMessage&login=" + \
-        mail_user+"&domain="+MAIL_DOMAIN+"&id="+str(latest_mail_id)
-    mail_content = requests.get(http_get_url_single).json()['textBody']
-    
+    http_get_url_single = (
+        "https://www.1secmail.com/api/v1/?action=readMessage&login="
+        + mail_user
+        + "&domain="
+        + MAIL_DOMAIN
+        + "&id="
+        + str(latest_mail_id)
+    )
+    mail_content = requests.get(http_get_url_single).json()["textBody"]
+
     # Parse the email content to get the confirmation link
     url_extract_pattern = "https?:\\/\\/beta[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
     urls = re.findall(url_extract_pattern, mail_content)
@@ -70,8 +83,9 @@ def _get_confirmation_link(mail: str):
         raise Exception("Multiple confirmation links found")
     elif len(urls) == 1:
         return urls[0]
-        
+
     raise Exception("Confirmation link not found")
+
 
 def __get_latest_hektCaptcha_ext(save_path: str):
     print("Downloading the latest hektCaptcha-extension from Github...")
@@ -83,25 +97,33 @@ def __get_latest_hektCaptcha_ext(save_path: str):
         data = r.json()
 
         i = 0
-        while i < len(data) and data['assets'][i]['content_type'] != 'application/x-chrome-extension':
-            i+=1
+        while (
+            i < len(data)
+            and data["assets"][i]["content_type"] != "application/x-chrome-extension"
+        ):
+            i += 1
 
         if i == len(data):
-            raise Exception("Couldn't get the chrome extension asset from the latest hektCaptcha-extension Github release")
-        
-        dl_url = data['assets'][i]['browser_download_url']
+            raise Exception(
+                "Couldn't get the chrome extension asset from the latest hektCaptcha-extension Github release"
+            )
+
+        dl_url = data["assets"][i]["browser_download_url"]
 
         r = requests.get(dl_url)
         if r.status_code == 200:
-            with open(save_path, 'wb') as f:
+            with open(save_path, "wb") as f:
                 f.write(r.content)
         else:
-            raise Exception("Couldn't download the latest hektCaptcha-extension from Github")
+            raise Exception(
+                "Couldn't download the latest hektCaptcha-extension from Github"
+            )
 
     else:
         raise Exception("Couldn't get the latest hektCaptcha-extension Github release")
-    
+
     print("hektCaptcha-extension downloaded to " + save_path)
+
 
 def create_account():
     """
@@ -125,36 +147,46 @@ def create_account():
     # cookie_button = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.ID, "CybotCookiebotDialogBodyButtonAccept"))
     # cookie_button.click()
 
-    email_input = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.NAME, "email"))
+    email_input = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(By.NAME, "email")
+    )
     email_input.send_keys(email)
 
     password_input = driver.find_element(By.NAME, "password")
     password_input.send_keys(password)
 
-    captcha_iframe = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.XPATH, "//iframe[@tabindex='0']"))
+    captcha_iframe = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(By.XPATH, "//iframe[@tabindex='0']")
+    )
     driver.switch_to.frame(captcha_iframe)
-    captcha_checkbox = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.ID, "checkbox"))
+    captcha_checkbox = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(By.ID, "checkbox")
+    )
     # Wait for aria-checked to be true
     t0 = monotonic()
     while captcha_checkbox.get_attribute("aria-checked") == "false":
         sleep(0.1)
         if monotonic() - t0 > 20:
             raise Exception("Captcha not checked in time")
-        
+
     driver.switch_to.default_content()
 
     sleep(0.5)
-    submit_button =  driver.find_element(By.XPATH, "//button[@type='submit']")
+    submit_button = driver.find_element(By.XPATH, "//button[@type='submit']")
     submit_button.click()
 
     link = _get_confirmation_link(email)
-    
+
     driver.get(link)
-    
-    close_button = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.XPATH, "//button[text()='Close']"))
+
+    close_button = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(By.XPATH, "//button[text()='Close']")
+    )
     close_button.click()
 
-    email_input = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.XPATH, "//input[@type='email']"))
+    email_input = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(By.XPATH, "//input[@type='email']")
+    )
     email_input.send_keys(email)
 
     password_input = driver.find_element(By.XPATH, "//input[@type='password']")
@@ -164,18 +196,30 @@ def create_account():
     submit_button = driver.find_element(By.XPATH, "//button[@type='submit']")
     submit_button.click()
 
-    account_button = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.XPATH, "//button[@data-testid='user-menu-button']"))
+    account_button = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(
+            By.XPATH, "//button[@data-testid='user-menu-button']"
+        )
+    )
     account_button.click()
 
-    menu_items_container = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.XPATH, "//div[starts-with(@id, 'headlessui-menu-items')]"))
-    id = "headlessui-menu-item-P0-" + str(int(menu_items_container.get_attribute("id").split("-")[-1]) + 1)
+    menu_items_container = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(
+            By.XPATH, "//div[starts-with(@id, 'headlessui-menu-items')]"
+        )
+    )
+    id = "headlessui-menu-item-P0-" + str(
+        int(menu_items_container.get_attribute("id").split("-")[-1]) + 1
+    )
     profile_button = menu_items_container.find_element(By.ID, id)
     profile_button.click()
-    
-    api_key_input = WebDriverWait(driver, 10).until(lambda driver: driver.find_element(By.XPATH, "//input[@type='password']"))
-    
-    api_key = ''
-    while api_key == '':
+
+    api_key_input = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(By.XPATH, "//input[@type='password']")
+    )
+
+    api_key = ""
+    while api_key == "":
         api_key = api_key_input.get_attribute("value")
         sleep(0.1)
 
