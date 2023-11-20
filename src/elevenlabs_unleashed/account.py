@@ -218,10 +218,9 @@ def create_account():
             By.XPATH, "//div[starts-with(@id, 'headlessui-menu-items')]"
         )
     )
-    id = "headlessui-menu-item-P0-" + str(
-        int(menu_items_container.get_attribute("id").split("-")[-1]) + 1
+    profile_button = menu_items_container.find_element(
+        By.XPATH, "//div[starts-with(@id, 'headlessui-menu-item-')]"
     )
-    profile_button = menu_items_container.find_element(By.ID, id)
     profile_button.click()
 
     api_key_input = WebDriverWait(driver, 10).until(
