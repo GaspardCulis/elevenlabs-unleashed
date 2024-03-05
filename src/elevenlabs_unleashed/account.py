@@ -3,6 +3,7 @@ import names
 import requests
 import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from random import randint, sample, shuffle
@@ -121,6 +122,9 @@ def create_account():
     password_input = driver.find_element(By.NAME, "password")
     password_input.send_keys(password)
 
+    terms_checkbox = driver.find_element(By.NAME, "terms")
+    driver.execute_script("arguments[0].click();", terms_checkbox)
+
     captcha_iframe = WebDriverWait(driver, 10).until(
         lambda driver: driver.find_element(By.XPATH, "//iframe[@tabindex='0']")
     )
@@ -161,6 +165,33 @@ def create_account():
     sleep(0.5)
     submit_button = driver.find_element(By.XPATH, "//button[@type='submit']")
     submit_button.click()
+
+    name_input = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(By.NAME, "name")
+    )
+    sleep(0.5)
+    name_input.send_keys(email)
+
+    from_list = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(
+            By.XPATH, "//button[@aria-haspopup='listbox']"
+        )
+    )
+
+    from_list.send_keys(Keys.ARROW_DOWN)
+
+    sleep(0.1)
+    li_option = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(By.XPATH, "//li[@role='option']")
+    )
+    li_option.click()
+
+    next_button = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(By.CLASS_NAME, "btn-primary")
+    )
+    next_button.click()
+
+    sleep(10000)
 
     account_button = WebDriverWait(driver, 10).until(
         lambda driver: driver.find_element(
