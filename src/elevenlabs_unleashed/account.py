@@ -26,8 +26,8 @@ def _generate_email():
     first_name = names.get_first_name()
     last_name = names.get_last_name()
     if randint(0, 1) == 0:
-        return f"{first_name}.{last_name}{randint(0, 99)}@{MAIL_DOMAIN}".lower()
-    return f"{first_name}{randint(0, 99)}@{MAIL_DOMAIN}".lower()
+        return f"{first_name}.{last_name}{randint(0, 9999)}@{MAIL_DOMAIN}".lower()
+    return f"{first_name}{randint(0, 9999)}@{MAIL_DOMAIN}".lower()
 
 
 def _generate_password():
