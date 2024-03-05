@@ -1,10 +1,9 @@
 from time import monotonic, sleep
 import names
 import requests
-from selenium import webdriver
+import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-import tempfile
 from selenium.webdriver.support.wait import WebDriverWait
 from random import randint, sample, shuffle
 import string
@@ -15,8 +14,6 @@ import os
 BASE_URL = "https://beta.elevenlabs.io"
 SIGNUP_URL = "https://beta.elevenlabs.io/sign-up"
 MAIL_DOMAIN = "txcct.com"
-
-HEKT_EXT_PATH = os.path.join(tempfile.gettempdir(), "hektCaptcha-extension.crx")
 
 
 def _generate_email():
@@ -97,57 +94,16 @@ def _get_confirmation_link(mail: str):
     raise Exception("Confirmation link not found")
 
 
-def __get_latest_hektCaptcha_ext(save_path: str):
-    print("Downloading the latest hektCaptcha-extension from Github...")
-
-    url = "https://api.github.com/repos/Wikidepia/hektCaptcha-extension/releases/latest"
-
-    r = requests.get(url)
-    if r.status_code == 200:
-        data = r.json()
-
-        i = 0
-        while (
-            i < len(data)
-            and data["assets"][i]["content_type"] != "application/x-chrome-extension"
-        ):
-            i += 1
-
-        if i == len(data):
-            raise Exception(
-                "Couldn't get the chrome extension asset from the latest hektCaptcha-extension Github release"
-            )
-
-        dl_url = data["assets"][i]["browser_download_url"]
-
-        r = requests.get(dl_url)
-        if r.status_code == 200:
-            with open(save_path, "wb") as f:
-                f.write(r.content)
-        else:
-            raise Exception(
-                "Couldn't download the latest hektCaptcha-extension from Github"
-            )
-
-    else:
-        raise Exception("Couldn't get the latest hektCaptcha-extension Github release")
-
-    print("hektCaptcha-extension downloaded to " + save_path)
-
-
 def create_account():
     """
     Create an account on Elevenlabs and return the email, password and api key
     """
-    if not os.path.exists(HEKT_EXT_PATH):
-        __get_latest_hektCaptcha_ext(HEKT_EXT_PATH)
     options = Options()
     options.headless = os.environ.get("DEBUG", "0") == "0"
     options.add_argument("--disable-logging")
     options.add_argument("--log-level=3")
     options.add_argument("--window-size=1440,1280")
-    options.add_extension(HEKT_EXT_PATH)
-    driver = webdriver.Chrome(options=options)
+    driver = uc.Chrome(options=options)
 
     driver.get(SIGNUP_URL)
 
