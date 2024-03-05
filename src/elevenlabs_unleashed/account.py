@@ -39,7 +39,7 @@ def _generate_password():
     temp = sample(upper, randint(1, 2))
     temp += sample(lower, randint(8, 10))
     temp += sample(num, randint(1, 3))
-    temp += sample(symbols, 1)
+    temp += sample(symbols, 1) + ["#"]
 
     shuffle(temp)
 
