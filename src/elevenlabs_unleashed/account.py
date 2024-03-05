@@ -191,23 +191,28 @@ def create_account():
     )
     next_button.click()
 
-    sleep(10000)
+    sleep(0.1)
+    containers = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_elements(By.CLASS_NAME, "flex-wrap")
+    )
 
-    account_button = WebDriverWait(driver, 10).until(
+    for i in range(2):
+        containers[i].find_element(By.TAG_NAME, "div").click()
+        sleep(0.2)
+
+    sleep(0.5)
+    stacks = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_elements(By.CLASS_NAME, "stack")
+    )
+
+    stacks[-1].find_elements(By.TAG_NAME, "button")[-1].click()
+
+    menu_list = WebDriverWait(driver, 10).until(
         lambda driver: driver.find_element(
-            By.XPATH, "//button[@data-testid='user-menu-button']"
+            By.CSS_SELECTOR, 'div[role="menu"][style*="visibility: visible"]'
         )
     )
-    account_button.click()
-
-    menu_items_container = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(
-            By.XPATH, "//div[starts-with(@id, 'headlessui-menu-items')]"
-        )
-    )
-    profile_button = menu_items_container.find_element(
-        By.XPATH, "//div[starts-with(@id, 'headlessui-menu-item-')]"
-    )
+    profile_button = menu_list.find_element(By.TAG_NAME, "button")
     profile_button.click()
 
     api_key_input = WebDriverWait(driver, 10).until(
