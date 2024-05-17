@@ -5,6 +5,13 @@ authors = [{ name = "GaspardCulis", email = "gasdev.lp@gmail.com" }]
 description = "Unlimited access to Elevenlabs API"
 readme = "README.md"
 requires-python = ">=3.7"
+dependencies = [
+  "elevenlabs",
+  "selenium",
+  "names",
+  "requests",
+  "undetected-chromedriver",
+]
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: MIT License",
