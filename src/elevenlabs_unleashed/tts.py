@@ -1,9 +1,10 @@
 from elevenlabs_unleashed.account import create_account
 import os
 import threading
-from elevenlabs import generate, stream, set_api_key, get_api_key
-from elevenlabs.api import User
-from elevenlabs.api.error import APIError
+from elevenlabs import stream
+from elevenlabs.client import ElevenLabs
+from elevenlabs.core import ApiError
+from elevenlabs.user.client import UserClient
 import json
 import sys
 import pathlib
@@ -46,12 +47,13 @@ class UnleashedTTS:
 
     def __init__(
         self,
-        accounts_save_path: str = DATADIR / "elevenlabs_accounts.json",
+        accounts_save_path: pathlib.Path = DATADIR / "elevenlabs_accounts.json",
         nb_accounts: int = 4,
         create_accounts_threads: int = 2,
     ):
         self.accounts_save_path = accounts_save_path
         self.nb_accounts = nb_accounts
+        self.client = ElevenLabs()
         self.create_account_errors = 0
         self.__check_accounts_file()
         self.__populate_accounts(create_accounts_threads)
@@ -68,7 +70,7 @@ class UnleashedTTS:
             print("[ElevenLabs] Exception: ", e)
             return
 
-        audio_stream = generate(text=message, voice=voice, model=model, stream=True)
+        audio_stream = self.client.generate(text=message, voice=voice, model=model, stream=True)
 
         print("[ElevenLabs] Starting the stream...")
         try:
@@ -78,9 +80,9 @@ class UnleashedTTS:
                 target=UnleashedTTS.__update_accounts, args=[self]
             )
             self.__update_accounts_thread.start()
-        except APIError as e:
+        except ApiError as e:
             print(e)
-            if e.message and e.message.startswith("Unusual activity detected."):
+            if e.body and e.body.startswith("Unusual activity detected."):
                 print(
                     "[ElevenLabs] Unusual activity detected. Speak again in a few hours."
                 )
@@ -102,6 +104,12 @@ class UnleashedTTS:
                 self.speak(message[:i])
                 self.speak(message[i:])
 
+    def get_api_key(self):
+        return self.client._client_wrapper._api_key
+
+    def set_api_key(self, api_key: str):
+        self.client._client_wrapper._api_key = api_key
+        
     def __check_accounts_file(self):
         if not os.path.exists(self.accounts_save_path):
             print(
@@ -179,7 +187,7 @@ class UnleashedTTS:
         self.accounts.sort(key=lambda x: x["character_count"], reverse=True)
         for account in self.accounts:
             if account["character_limit"] - account["character_count"] >= text_length:
-                if get_api_key() != account["api_key"]:
+                if self.get_api_key() != account["api_key"]:
                     print(
                         "[ElevenLabs] Switching to account: "
                         + account["username"]
@@ -189,7 +197,7 @@ class UnleashedTTS:
                         + str(account["character_limit"])
                         + ")"
                     )
-                set_api_key(account["api_key"])
+                self.set_api_key(account["api_key"])
                 return
         raise Exception("No account available to handle the text length")
 
@@ -197,8 +205,9 @@ class UnleashedTTS:
         print("[ElevenLabs] Updating accounts...")
         # Select the account with the highest usage which can handle the text length
         for i in range(len(self.accounts)):
-            set_api_key(self.accounts[i]["api_key"])
-            user = User.from_api()
-            self.accounts[i]["character_count"] = user.subscription.character_count
-            self.accounts[i]["character_limit"] = user.subscription.character_limit
+            self.set_api_key(self.accounts[i]["api_key"])
+            user = UserClient(client_wrapper=self.client._client_wrapper)
+            subscription = user.get_subscription()
+            self.accounts[i]["character_count"] = subscription.character_count
+            self.accounts[i]["character_limit"] = subscription.character_limit
         print("[ElevenLabs] Accounts updated")
