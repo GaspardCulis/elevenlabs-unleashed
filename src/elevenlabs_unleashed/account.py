@@ -144,8 +144,9 @@ def create_account():
 
     driver.switch_to.default_content()
 
-    sleep(0.5)
-    submit_button = driver.find_element(By.XPATH, "//button[@type='submit']")
+    submit_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']"))
+    )
     submit_button.click()
 
     link = _get_confirmation_link(email)
@@ -165,8 +166,9 @@ def create_account():
     password_input = driver.find_element(By.XPATH, "//input[@type='password']")
     password_input.send_keys(password)
 
-    sleep(0.5)
-    submit_button = driver.find_element(By.XPATH, "//button[@type='submit']")
+    submit_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']"))
+    )
     submit_button.click()
 
     name_input = WebDriverWait(driver, 10).until(
@@ -183,9 +185,8 @@ def create_account():
 
     from_list.send_keys(Keys.ARROW_DOWN)
 
-    sleep(0.1)
     li_option = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(By.XPATH, "//li[@role='option']")
+        EC.element_to_be_clickable((By.XPATH, "//li[@role='option']"))
     )
     li_option.click()
 
