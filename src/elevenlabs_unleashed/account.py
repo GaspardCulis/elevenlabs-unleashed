@@ -205,15 +205,16 @@ def create_account():
         sleep(0.2)
 
     sleep(0.5)
-    stacks = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_elements(By.CLASS_NAME, "stack")
+    navbar = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(By.TAG_NAME, "nav")
     )
 
-    stacks[-1].find_elements(By.TAG_NAME, "button")[-1].click()
+    account_button = navbar.find_elements(By.TAG_NAME, "button")[-1]
+    account_button.click()
 
     menu_list = WebDriverWait(driver, 10).until(
         lambda driver: driver.find_element(
-            By.CSS_SELECTOR, 'div[role="menu"][style*="visibility: visible"]'
+            By.CSS_SELECTOR, 'div[data-projection-id="5"]'
         )
     )
     profile_button = menu_list.find_element(By.TAG_NAME, "button")
