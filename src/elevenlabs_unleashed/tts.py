@@ -61,7 +61,7 @@ class UnleashedTTS:
         self.__update_accounts_thread = threading.Thread(target=UnleashedTTS.__update_accounts, args=[self])  # type: ignore
         self.__update_accounts_thread.start()
 
-    def speak(self, message: str, voice="Josh", model="eleven_multilingual_v1"):
+    def speak(self, message: str, voice="Daniel", model="eleven_multilingual_v2"):
         print("[ElevenLabs] Selecting account...")
 
         try:
