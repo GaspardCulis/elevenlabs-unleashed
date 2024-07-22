@@ -1,0 +1,12 @@
+.vscode
+*.egg-info
+dist
+build
+bin
+lib
+share
+.env
+venv
+pyvenv.cfg
+*/**/__pycache__
+*/**/*.pyc
