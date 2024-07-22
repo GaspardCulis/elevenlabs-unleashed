@@ -23,7 +23,7 @@ pip install git+https://github.com/GaspardCulis/elevenlabs-unleashed.git
 Create an account
 
 ```py
-from elevenlabs_unleashed.account import create_account
+from account import create_account
 
 username, password, api_key = create_account()
 ```
@@ -31,7 +31,7 @@ username, password, api_key = create_account()
 Full-on unlimited 11Labs API wrapper
 
 ```py
-from elevenlabs_unleashed.tts import UnleashedTTS
+from tts import UnleashedTTS
 
 tts = UnleashedTTS(nb_accounts=2, create_accounts_threads=2)
 """

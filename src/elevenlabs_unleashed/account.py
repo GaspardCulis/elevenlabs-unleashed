@@ -13,9 +13,10 @@ import requests
 import re
 import os
 
+
 BASE_URL = "https://beta.elevenlabs.io"
 SIGNUP_URL = "https://beta.elevenlabs.io/sign-up"
-MAIL_DOMAIN = "txcct.com"
+MAIL_DOMAIN = "dpptd.com"
 
 
 def _generate_email():
@@ -86,7 +87,7 @@ def _get_confirmation_link(mail: str):
     mail_content = requests.get(http_get_url_single).json()["textBody"]
 
     # Parse the email content to get the confirmation link
-    url_extract_pattern = "https?:\\/\\/beta[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)"
+    url_extract_pattern = "(https:\/\/elevenlabs\.io\/app\/action\?mode=verifyEmail&oobCode=.*newUser=true)"
     urls = re.findall(url_extract_pattern, mail_content)
     if len(urls) > 1:
         raise Exception("Multiple confirmation links found")
@@ -105,6 +106,8 @@ def create_account():
     options.add_argument("--disable-logging")
     options.add_argument("--log-level=3")
     options.add_argument("--window-size=1440,1280")
+    options.add_argument("--user-data-dir=C:/Users/Me/Documents/AI/VAM/elevenlabs-unleashed/src/elevenlabs_unleashed\Default")
+    options.add_argument("--incognito")
     driver = uc.Chrome(options=options)
 
     driver.get(SIGNUP_URL)
@@ -112,17 +115,17 @@ def create_account():
     email = _generate_email()
     password = _generate_password()
 
-    cookie_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.ID, "CybotCookiebotDialogBodyButtonDecline"))
-    )
-    cookie_button.click()
+    # cookie_button = WebDriverWait(driver, 10).until(
+    #     EC.element_to_be_clickable((By.ID, "CybotCookiebotDialogBodyButtonDecline"))
+    # )
+    # cookie_button.click()
 
     email_input = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(By.NAME, "email")
+        lambda driver: driver.find_element(By.XPATH, "//input[@type='email']")
     )
     email_input.send_keys(email)
 
-    password_input = driver.find_element(By.NAME, "password")
+    password_input = driver.find_element(By.XPATH, "//input[@type='password']")
     password_input.send_keys(password)
 
     terms_checkbox = driver.find_element(By.NAME, "terms")
@@ -171,59 +174,37 @@ def create_account():
     )
     submit_button.click()
 
-    name_input = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(By.NAME, "name")
+    skip_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//button[text()="Skip"]'))
     )
-    sleep(0.5)
-    name_input.send_keys(email)
+    skip_button.click()
 
-    from_list = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(
-            By.XPATH, "//button[@aria-haspopup='listbox']"
-        )
+    account_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Your profile']"))
     )
-
-    from_list.send_keys(Keys.ARROW_DOWN)
-
-    li_option = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//li[@role='option']"))
-    )
-    li_option.click()
-
-    next_button = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(By.CLASS_NAME, "btn-primary")
-    )
-    next_button.click()
-
-    sleep(0.1)
-    containers = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_elements(By.CLASS_NAME, "flex-wrap")
-    )
-
-    for i in range(2):
-        containers[i].find_element(By.TAG_NAME, "div").click()
-        sleep(0.2)
-
-    sleep(0.5)
-    navbar = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(By.TAG_NAME, "nav")
-    )
-
-    account_button = navbar.find_elements(By.TAG_NAME, "button")[-1]
     account_button.click()
 
-    menu_list = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(
-            By.CSS_SELECTOR, 'div[data-projection-id="5"]'
-        )
+    profile_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Profile + API key']"))
     )
-    profile_button = menu_list.find_element(By.TAG_NAME, "button")
     profile_button.click()
 
-    api_key_input = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(By.XPATH, "//input[@type='password']")
-    )
 
+    refresh_api_button = WebDriverWait(driver, 10).until(
+         EC.element_to_be_clickable((By.XPATH,"/html/body/div[3]/div/div/div/div[2]/div/div/div/div[2]/div[1]/div[2]/div/button[2]"))
+    )
+    refresh_api_button.click()
+ 
+
+    confirm_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//button[text()="Confirm"]'))
+    )
+    confirm_button.click()
+
+
+    api_key_input = WebDriverWait(driver, 10).until(
+        lambda driver: driver.find_element(By.XPATH, '//input[@aria-label="API Key"]')
+    )
     api_key = ""
     while api_key == "":
         api_key = api_key_input.get_attribute("value")
