@@ -106,8 +106,6 @@ def create_account():
     options.add_argument("--disable-logging")
     options.add_argument("--log-level=3")
     options.add_argument("--window-size=1440,1280")
-    options.add_argument("--user-data-dir=C:/Users/Me/Documents/AI/VAM/elevenlabs-unleashed/src/elevenlabs_unleashed\Default")
-    options.add_argument("--incognito")
     driver = uc.Chrome(options=options)
 
     driver.get(SIGNUP_URL)
