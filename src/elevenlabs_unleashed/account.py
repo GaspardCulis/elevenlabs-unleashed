@@ -113,6 +113,11 @@ def create_account():
     email = _generate_email()
     password = _generate_password()
 
+    cookie_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "CybotCookiebotDialogBodyButtonDecline"))
+    )
+    cookie_button.click()
+
     email_input = WebDriverWait(driver, 10).until(
         lambda driver: driver.find_element(By.XPATH, "//input[@type='email']")
     )
