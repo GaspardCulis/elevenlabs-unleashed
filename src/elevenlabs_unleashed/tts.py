@@ -46,10 +46,10 @@ class UnleashedTTS:
     """
 
     def __init__(
-        self,
-        accounts_save_path: pathlib.Path = DATADIR / "elevenlabs_accounts.json",
-        nb_accounts: int = 4,
-        create_accounts_threads: int = 2,
+            self,
+            accounts_save_path: pathlib.Path = DATADIR / "elevenlabs_accounts.json",
+            nb_accounts: int = 4,
+            create_accounts_threads: int = 2,
     ):
         self.accounts_save_path = accounts_save_path
         self.nb_accounts = nb_accounts
@@ -58,7 +58,8 @@ class UnleashedTTS:
         self.__check_accounts_file()
         self.__populate_accounts(create_accounts_threads)
 
-        self.__update_accounts_thread = threading.Thread(target=UnleashedTTS.__update_accounts, args=[self])  # type: ignore
+        self.__update_accounts_thread = threading.Thread(target=UnleashedTTS.__update_accounts,
+                                                         args=[self])  # type: ignore
         self.__update_accounts_thread.start()
 
     def speak(self, message: str, voice="Daniel", model="eleven_multilingual_v2"):
@@ -110,7 +111,7 @@ class UnleashedTTS:
     def set_api_key(self, api_key: str):
         self.client._client_wrapper._api_key = api_key
         self.client._client_wrapper.httpx_client.base_headers = self.client._client_wrapper.get_headers()
-        
+
     def __check_accounts_file(self):
         if not os.path.exists(self.accounts_save_path):
             print(
@@ -132,11 +133,11 @@ class UnleashedTTS:
         # Check if the file contains valid accounts
         for account in accounts:
             if not (
-                "username" in account and "password" in account and "api_key" in account
+                    "username" in account and "password" in account and "api_key" in account
             ) or not (
-                isinstance(account["username"], str)
-                and isinstance(account["password"], str)
-                and isinstance(account["api_key"], str)
+                    isinstance(account["username"], str)
+                    and isinstance(account["password"], str)
+                    and isinstance(account["api_key"], str)
             ):
                 print("[ElevenLabs] Accounts file is corrupted. Deleting it...")
                 os.remove(self.accounts_save_path)
@@ -155,7 +156,7 @@ class UnleashedTTS:
             )
             threads = []
             for i in range(
-                min(create_accounts_threads, self.nb_accounts - len(self.accounts))
+                    min(create_accounts_threads, self.nb_accounts - len(self.accounts))
             ):
                 thread = threading.Thread(target=self.__create_account)
                 thread.start()

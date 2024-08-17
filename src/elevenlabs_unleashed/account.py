@@ -13,9 +13,8 @@ import requests
 import re
 import os
 
-
-BASE_URL = "https://beta.elevenlabs.io"
-SIGNUP_URL = "https://beta.elevenlabs.io/sign-up"
+BASE_URL = "https://elevenlabs.io"
+SIGNUP_URL = "https://elevenlabs.io/sign-up"
 MAIL_DOMAIN = "dpptd.com"
 
 
@@ -77,12 +76,12 @@ def _get_confirmation_link(mail: str):
 
     # Get the email content
     http_get_url_single = (
-        "https://www.1secmail.com/api/v1/?action=readMessage&login="
-        + mail_user
-        + "&domain="
-        + MAIL_DOMAIN
-        + "&id="
-        + str(latest_mail_id)
+            "https://www.1secmail.com/api/v1/?action=readMessage&login="
+            + mail_user
+            + "&domain="
+            + MAIL_DOMAIN
+            + "&id="
+            + str(latest_mail_id)
     )
     mail_content = requests.get(http_get_url_single).json()["textBody"]
 
@@ -113,101 +112,106 @@ def create_account():
     email = _generate_email()
     password = _generate_password()
 
-    cookie_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.ID, "CybotCookiebotDialogBodyButtonDecline"))
-    )
-    cookie_button.click()
+    try:
+        cookie_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.ID, "CybotCookiebotDialogBodyButtonDecline"))
+        )
+        cookie_button.click()
 
-    email_input = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(By.XPATH, "//input[@type='email']")
-    )
-    email_input.send_keys(email)
+        email_input = WebDriverWait(driver, 10).until(
+            lambda driver: driver.find_element(By.XPATH, "//input[@type='email']")
+        )
+        email_input.send_keys(email)
 
-    password_input = driver.find_element(By.XPATH, "//input[@type='password']")
-    password_input.send_keys(password)
+        password_input = driver.find_element(By.XPATH, "//input[@type='password']")
+        password_input.send_keys(password)
 
-    terms_checkbox = driver.find_element(By.NAME, "terms")
-    driver.execute_script("arguments[0].click();", terms_checkbox)
+        terms_checkbox = driver.find_element(By.NAME, "terms")
+        driver.execute_script("arguments[0].click();", terms_checkbox)
 
-    captcha_iframe = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(By.XPATH, "//iframe[@tabindex='0']")
-    )
-    driver.switch_to.frame(captcha_iframe)
-    captcha_checkbox = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(By.ID, "checkbox")
-    )
-    # Wait for aria-checked to be true
-    t0 = monotonic()
-    while captcha_checkbox.get_attribute("aria-checked") == "false":
-        sleep(0.1)
-        if monotonic() - t0 > 20:
-            raise Exception("Captcha not checked in time")
+        captcha_iframe = WebDriverWait(driver, 20).until(
+            lambda driver: driver.find_element(By.XPATH, "//iframe[@tabindex='0']")
+        )
 
-    driver.switch_to.default_content()
+        driver.switch_to.frame(captcha_iframe)
+        captcha_checkbox = WebDriverWait(driver, 10).until(
+            lambda driver: driver.find_element(By.ID, "checkbox")
+        )
+        # Wait for aria-checked to be true
+        t0 = monotonic()
+        while captcha_checkbox.get_attribute("aria-checked") == "false":
+            sleep(0.1)
+            if monotonic() - t0 > 20:
+                raise Exception("Captcha not checked in time")
 
-    submit_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']"))
-    )
-    submit_button.click()
+        driver.switch_to.default_content()
 
-    link = _get_confirmation_link(email)
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']"))
+        )
+        submit_button.click()
 
-    driver.get(link)
+        link = _get_confirmation_link(email)
 
-    close_button = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(By.XPATH, "//button[text()='Close']")
-    )
-    close_button.click()
+        driver.get(link)
 
-    email_input = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(By.XPATH, "//input[@type='email']")
-    )
-    email_input.send_keys(email)
+        close_button = WebDriverWait(driver, 10).until(
+            # fixed Sign in button
+            lambda driver: driver.find_element(By.XPATH, "//button[text()='Sign in']")
+        )
+        close_button.click()
 
-    password_input = driver.find_element(By.XPATH, "//input[@type='password']")
-    password_input.send_keys(password)
+        email_input = WebDriverWait(driver, 10).until(
+            lambda driver: driver.find_element(By.XPATH, "//input[@type='email']")
+        )
+        email_input.send_keys(email)
 
-    submit_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']"))
-    )
-    submit_button.click()
+        password_input = driver.find_element(By.XPATH, "//input[@type='password']")
+        password_input.send_keys(password)
 
-    skip_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, '//button[text()="Skip"]'))
-    )
-    skip_button.click()
+        submit_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']"))
+        )
+        submit_button.click()
 
-    account_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Your profile']"))
-    )
-    account_button.click()
+        skip_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//button[text()="Skip"]'))
+        )
+        skip_button.click()
 
-    profile_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Profile + API key']"))
-    )
-    profile_button.click()
+        account_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Your profile']"))
+        )
+        account_button.click()
 
+        profile_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Profile + API key']"))
+        )
+        profile_button.click()
 
-    refresh_api_button = WebDriverWait(driver, 10).until(
-         EC.element_to_be_clickable((By.XPATH,"/html/body/div[3]/div/div/div/div[2]/div/div/div/div[2]/div[1]/div[2]/div/button[2]"))
-    )
-    refresh_api_button.click()
- 
+        refresh_api_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "/html/body/div[3]/div/div/div/div[2]/div/div/div/div[2]/div[1]/div[2]/div/button[2]"))
+        )
+        refresh_api_button.click()
 
-    confirm_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, '//button[text()="Confirm"]'))
-    )
-    confirm_button.click()
+        confirm_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//button[text()="Confirm"]'))
+        )
+        confirm_button.click()
 
+        api_key_input = WebDriverWait(driver, 10).until(
+            lambda driver: driver.find_element(By.XPATH, '//input[@aria-label="API Key"]')
+        )
+        api_key = ""
+        while api_key == "":
+            api_key = api_key_input.get_attribute("value")
+            sleep(0.1)
 
-    api_key_input = WebDriverWait(driver, 10).until(
-        lambda driver: driver.find_element(By.XPATH, '//input[@aria-label="API Key"]')
-    )
-    api_key = ""
-    while api_key == "":
-        api_key = api_key_input.get_attribute("value")
-        sleep(0.1)
+        driver.quit()
 
-    driver.quit()
+    except Exception as e:
+        driver.quit()
+        raise e
 
     return email, password, api_key
