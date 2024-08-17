@@ -2,7 +2,7 @@ from time import monotonic, sleep
 import names
 import requests
 import undetected_chromedriver as uc
-from selenium.common.exceptions import JavascriptException
+from selenium.common.exceptions import JavascriptException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
@@ -175,20 +175,26 @@ class _ElevenLabsWebsiteSignup(ElevenLabsWebsite):
         return super()
 
     def check_captcha(self):
-        captcha_iframe = self.driver.find_element(By.XPATH, "//iframe[@tabindex='0']")
+        try:
+            captcha_iframe = self.driver.find_element(
+                By.XPATH, "//iframe[@tabindex='0']"
+            )
 
-        self.driver.switch_to.frame(captcha_iframe)
-        captcha_checkbox = self.wait.until(
-            lambda driver: driver.find_element(By.ID, "checkbox")
-        )
-        # Wait for aria-checked to be true
-        t0 = monotonic()
-        while captcha_checkbox.get_attribute("aria-checked") == "false":
-            sleep(0.1)
-            if monotonic() - t0 > 20:
-                raise Exception("Captcha not checked in time")
+            self.driver.switch_to.frame(captcha_iframe)
+            captcha_checkbox = self.wait.until(
+                lambda driver: driver.find_element(By.ID, "checkbox")
+            )
+            # Wait for aria-checked to be true
+            t0 = monotonic()
+            while captcha_checkbox.get_attribute("aria-checked") == "false":
+                sleep(0.1)
+                if monotonic() - t0 > 20:
+                    raise Exception("Captcha not checked in time")
 
-        self.driver.switch_to.default_content()
+            self.driver.switch_to.default_content()
+        except NoSuchElementException:
+            pass
+
         return self
 
 
