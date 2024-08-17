@@ -14,8 +14,8 @@ import re
 import os
 
 
-BASE_URL = "https://beta.elevenlabs.io"
-SIGNUP_URL = "https://beta.elevenlabs.io/sign-up"
+BASE_URL = "https://elevenlabs.io"
+SIGNUP_URL = "https://elevenlabs.io/sign-up"
 MAIL_DOMAIN = "dpptd.com"
 
 
