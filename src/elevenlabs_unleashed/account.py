@@ -183,22 +183,26 @@ def create_account():
     account_button.click()
 
     profile_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Profile + API key']"))
+        EC.element_to_be_clickable(
+            (By.XPATH, "//button[@aria-label='Profile + API key']")
+        )
     )
     profile_button.click()
 
-
     refresh_api_button = WebDriverWait(driver, 10).until(
-         EC.element_to_be_clickable((By.XPATH,"/html/body/div[3]/div/div/div/div[2]/div/div/div/div[2]/div[1]/div[2]/div/button[2]"))
+        EC.element_to_be_clickable(
+            (
+                By.XPATH,
+                "/html/body/div[3]/div/div/div/div[2]/div/div/div/div[2]/div[1]/div[2]/div/button[2]",
+            )
+        )
     )
     refresh_api_button.click()
- 
 
     confirm_button = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, '//button[text()="Confirm"]'))
     )
     confirm_button.click()
-
 
     api_key_input = WebDriverWait(driver, 10).until(
         lambda driver: driver.find_element(By.XPATH, '//input[@aria-label="API Key"]')

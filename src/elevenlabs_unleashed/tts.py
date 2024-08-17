@@ -70,7 +70,9 @@ class UnleashedTTS:
             print("[ElevenLabs] Exception: ", e)
             return
 
-        audio_stream = self.client.generate(text=message, voice=voice, model=model, stream=True)
+        audio_stream = self.client.generate(
+            text=message, voice=voice, model=model, stream=True
+        )
 
         print("[ElevenLabs] Starting the stream...")
         try:
@@ -109,8 +111,10 @@ class UnleashedTTS:
 
     def set_api_key(self, api_key: str):
         self.client._client_wrapper._api_key = api_key
-        self.client._client_wrapper.httpx_client.base_headers = self.client._client_wrapper.get_headers()
-        
+        self.client._client_wrapper.httpx_client.base_headers = (
+            self.client._client_wrapper.get_headers()
+        )
+
     def __check_accounts_file(self):
         if not os.path.exists(self.accounts_save_path):
             print(
