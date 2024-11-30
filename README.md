@@ -2,9 +2,8 @@
 
 Provides unlimited ElevenLabs API calls.
 
-## Disclaimer!
-
-This project is getting a bit too popular, be reasonable when creating fake accounts, if too many fake accounts are created, the 11Labs team will start investigating these fake accounts, and patch automated account creation with captcha (they did it but [#6](https://github.com/GaspardCulis/elevenlabs-unleashed/issues/6) showed me how to bypass it) or even remove free access to its services.
+> [!NOTE]  
+> This project is no longer maintained and requires efforts and fixes to get running.
 
 ## Installation
 
@@ -58,10 +57,6 @@ You can run the account creation procedure with the browser visible by executing
 - Try not to get sued by 11Labs
 
 ## Notes
-
-This library is very unstable and I guess won't work for long. It only relies on the fact that 11Labs account creation is easily bot-able. Also some minor [11Labs website](https://beta.elevenlabs.io/) changes might break my crappy web scraping.
-
-If you find issues don't hesitate to submit a PR if you find a fix.
 
 Using this code might temporarly ban your IP from using 11Labs API, refer to [this](https://help.elevenlabs.io/hc/en-us/articles/14129701265681-Why-am-I-receiving-information-about-unusual-activity-)
 
